@@ -1,7 +1,7 @@
 import sys
 import textwrap as tw
 
-ascii_dict = {chr(i) : i for i in range(0,128)}
+ascii_dict = {i : chr(i) for i in range(0,128)}
 base64_dict = {}
 output_string = ""
 
@@ -22,8 +22,11 @@ def get_key_from_dict(search_value, dict):
 			return key
 	return None
 
+def convert_binary(number):
+	binary_number = str(bin(number))[2:]
+	return "0"*(6-len(binary_number)) + binary_number
+
 build_base64_dict()
-print(base64_dict)
 
 string_to_decode = ""
 if len(sys.argv) == 1:
@@ -33,11 +36,12 @@ else:
 if len(string_to_decode) % 4 != 0:
 	print("Invalid input, can't decode string")
 	exit
+
 string_to_decode = tw.wrap(string_to_decode, 4)
 
 for group in string_to_decode:
-	char = ''.join(list(map(lambda x : str(bin(ascii_dict[group[0]]))[2:], group)))
-	letters = tw.wrap(char, 3)
-	for number in letters:
-		output_string += get_key_from_dict(int(number, 2), ascii_dict)
+	indexes = list(map(lambda x : get_key_from_dict(x, base64_dict), group))
+	binary_group = ''.join(list(map(convert_binary, indexes)))
+	for ascii_char in tw.wrap(binary_group, 8):
+		output_string += ascii_dict[int(ascii_char, 2)]
 print(output_string)
