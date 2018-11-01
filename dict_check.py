@@ -21,7 +21,7 @@ def main(args):
     if dictionary_list == None:
         print("Nothing could be extracted from the file")
     for word in dictionary_list:
-        if len(word) > 15:
+        if "4" in word:
             print(word)
 
 if __name__ == "__main__":
